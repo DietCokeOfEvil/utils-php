@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Common functionality across all UI modules.
+ * Utility methods.
  */
 class Utils {
     /**
