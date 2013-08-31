@@ -43,7 +43,7 @@ class Utils {
         return trim(preg_replace('/[^[:alnum:]\.,@_-\s\/\:\?&]/', '', $in));
     }
 
-    /*
+    /**
      * Gets the base URL of the HTTP server where the script is being run.
      */
     public static function getBaseUrl() {
@@ -66,7 +66,7 @@ class Utils {
         return $pageURL;
     }
 
-    /*
+    /**
      * Gets the server-side base path of the server where the script is
      * being run.
      */
