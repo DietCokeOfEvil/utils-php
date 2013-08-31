@@ -2,6 +2,7 @@
 
 /**
  * Utility methods.
+ * TODO: this is becoming a God object.  Split it up.
  */
 class Utils {
     /**
@@ -106,6 +107,80 @@ class Utils {
 
         $len = strlen($processed);
         return ($len <= 0 ? $processed : substr($processed, 0, $len - 1));
+    }
+
+    /**
+     * Convenience method for getting the first match of an XPATH query
+     * in an XML document.
+     *
+     * @param type $xpath    The XPATH instance.
+     * @param type $domNode  The DOM node under which to execute the query.
+     * @param type $query    The actual query string.
+     * @return The first matched value, or null.
+     */
+    public static function getNodeValue($xpath, $domNode, $query) {
+        $values = Utils::getNodeValues($xpath, $domNode, $query);
+        if (null == $values || 0 == count($values)) return null;
+
+        return $values[0];
+    }
+
+    /**
+     * Convenience method for getting all matched values of an XPATH query
+     * in an XML document.
+     *
+     * @param type $xpath    The XPATH instance.
+     * @param type $domNode  The DOM node under which to execute the query.
+     * @param type $query    The actual query string.
+     * @return type          All matched values, in the order they occur in
+     *                          the XML document.  Returns an empty array
+     *                          if no values are found.
+     */
+    public static function getNodeValues($xpath, $domNode, $query) {
+        $values = array();
+        $nodes = Utils::getNodes($xpath, $domNode, $query);
+        foreach($nodes as $node) {
+            $values[] = $node->nodeValue;
+        }
+
+        return $values;
+    }
+
+    /**
+     * Convenience method for getting all matched nodes an XPATH query
+     * in an XML document.
+     *
+     * @param type $xpath    The XPATH instance.
+     * @param type $domNode  The DOM node under which to execute the query.
+     * @param type $query    The actual query string.
+     * @return type          All matched nodes, in the order they occur in
+     *                          the XML document.  Returns an empty array
+     *                          if no values are found.
+     */
+    public static function getNodes($xpath, $domNode, $query) {
+        $nodes = array();
+        $nodeList = $xpath->query($query, $domNode);
+        if (!is_null($nodeList)) {
+            for ($i=0; $i<$nodeList->length; ++$i) {
+                $nodes[] = $nodeList->item($i);
+            }
+        }
+
+        return $nodes;
+    }
+
+    /**
+     * Replaces occurrences of multiple consecutive whitespace characters with
+     * single spaces.  Also replaces newlines and tabs with single spaces and
+     * trims leading and trailing whitespace.
+     *
+     * @param string $in The text to be condensed.
+     * @return string A condensed copy of $in.
+     */
+    public static function condenseWhiteSpace($in) {
+        // Could use /\s+/, but that's too greedy. It will replace all the
+        // single spaces as well, which is pointless and expensive.
+        return trim(preg_replace('/\s{2,}\t|\n/', " ", $in));
     }
 }
 ?>
